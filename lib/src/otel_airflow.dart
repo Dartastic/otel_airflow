@@ -1,13 +1,13 @@
-// Licensed under the Dartastic Pro Software License Agreement.
+// Licensed under the Apache License, Version 2.0
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_airflow_suppression.dart';
 
 const _tracerName = 'dartastic_otel_libs_airflow';
 
-Tracer _tracer() => OTel.tracerProvider().getTracer(_tracerName);
+APITracer _tracer() => OTelAPI.tracerProvider().getTracer(_tracerName);
 
 class AirflowResult {
   const AirflowResult({
@@ -105,56 +105,56 @@ Future<T> tracedAirflow<T>({
   final span = _tracer().startSpan(
     'airflow $operation',
     kind: SpanKind.client,
-    attributes: OTel.attributesFromMap(m),
+    attributes: OTelAPI.attributesFromMap(m),
   );
   try {
     final r = await invoke();
     if (r.result != null) {
       final extras = <Attribute<Object>>[];
       if (r.result!.deploymentName != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.deployment.name',
           r.result!.deploymentName!,
         ));
       }
       if (r.result!.dagId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.dag.id',
           r.result!.dagId!,
         ));
       }
       if (r.result!.dagRunId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.dag_run.id',
           r.result!.dagRunId!,
         ));
       }
       if (r.result!.runType != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.run.type',
           r.result!.runType!,
         ));
       }
       if (r.result!.executionDate != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.execution.date',
           r.result!.executionDate!,
         ));
       }
       if (r.result!.dataIntervalStart != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.data_interval.start',
           r.result!.dataIntervalStart!,
         ));
       }
       if (r.result!.dataIntervalEnd != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.data_interval.end',
           r.result!.dataIntervalEnd!,
         ));
       }
       if (r.result!.dagRunState != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.dag_run.state',
           r.result!.dagRunState!,
         ));
@@ -163,13 +163,13 @@ Future<T> tracedAirflow<T>({
         }
       }
       if (r.result!.taskId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.task.id',
           r.result!.taskId!,
         ));
       }
       if (r.result!.taskInstanceState != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.task_instance.state',
           r.result!.taskInstanceState!,
         ));
@@ -181,37 +181,37 @@ Future<T> tracedAirflow<T>({
         }
       }
       if (r.result!.tryNumber != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'airflow.try_number',
           r.result!.tryNumber!,
         ));
       }
       if (r.result!.maxTries != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'airflow.max_tries',
           r.result!.maxTries!,
         ));
       }
       if (r.result!.pool != null) {
-        extras.add(OTel.attributeString('airflow.pool', r.result!.pool!));
+        extras.add(OTelAPI.attributeString('airflow.pool', r.result!.pool!));
       }
       if (r.result!.queue != null) {
-        extras.add(OTel.attributeString('airflow.queue', r.result!.queue!));
+        extras.add(OTelAPI.attributeString('airflow.queue', r.result!.queue!));
       }
       if (r.result!.operatorName != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'airflow.operator.name',
           r.result!.operatorName!,
         ));
       }
       if (r.result!.durationSec != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'airflow.duration_sec',
           r.result!.durationSec!,
         ));
       }
       if (r.result!.statusCode != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'http.response.status_code',
           r.result!.statusCode!,
         ));
@@ -222,13 +222,13 @@ Future<T> tracedAirflow<T>({
           );
         }
       }
-      if (extras.isNotEmpty) span.addAttributes(OTel.attributes(extras));
+      if (extras.isNotEmpty) span.addAttributes(OTelAPI.attributes(extras));
     }
     return r.value;
   } catch (e, st) {
-    span.addAttributes(OTel.attributes([
-      OTel.attributeString(
-        ErrorResource.errorType.key,
+    span.addAttributes(OTelAPI.attributes([
+      OTelAPI.attributeString(
+        ErrorAttributes.errorType.key,
         e.runtimeType.toString(),
       ),
     ]));
